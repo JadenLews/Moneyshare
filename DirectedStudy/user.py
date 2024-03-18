@@ -53,8 +53,7 @@ class User:
         #should contain the amount and the action being done, this log will be used
         #to generate codes for future transactions
         if p_number in self.transaction_log:
-            #has history, add to it
-            print()
+            self.transaction_log[p_number].append((p_number, amount))
         else:
             #no history create item in dictionary
-            print()
+            self.transaction_log[p_number] = [(p_number, amount)]
