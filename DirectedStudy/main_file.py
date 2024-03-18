@@ -1,13 +1,11 @@
 from user import User
 import time
 
-def valid_account(id):
-    #WIP
-    print()
 
-def add_user(user):
-    #if valid account:
-    list_accounts.append(user)
+#currently the phone number is the identifying number for an account
+#this us under the assumption that all phone numbers for sim technology 
+#are unique and cannot be modified by users
+
 
 def start(user):
     print(f"Hello {user.name}!")
@@ -25,6 +23,7 @@ def choices(user):
 
 def check_balance(user):
     print(f"\nYour balance is {user.account_balance} {user.currency}\n\n")
+    time.sleep(3)
     choices(user)
 
 def send(user):
@@ -38,7 +37,7 @@ def send(user):
         #True
         #generate code 2
         user.make_transaction(amount, 'subtract')
-        code_two = user.generate_code_2(amount, p_number)
+        code_two = user.generate_code_2(amount, p_number, code_1)
         print(f"Code 2 is {code_two}\n")
         print(f"Balance is now {user.account_balance}\n")
         time.sleep(3)
@@ -56,7 +55,7 @@ def receive(user):
     print(f"Code 1 is {code_one}\n")
     time.sleep(3)
     code_2 = int(input('Enter Code 2\n'))
-    code_2_check = user.validate_code_2(p_number, code_2)
+    code_2_check = user.validate_code_2(p_number, code_2, code_one)
     #Check
     if code_2_check:
         #True so add funds
@@ -65,13 +64,8 @@ def receive(user):
         time.sleep(3)
         choices(user)
 
-
-def valid_code(user, code):
-    #use code and user to ensure correctly generated code
-    return True
     
 
 list_accounts = []
 jaden = User('Jaden', 123, 100, 'USD')
-add_user(jaden)
 start(jaden)
