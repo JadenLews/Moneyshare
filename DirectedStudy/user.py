@@ -30,8 +30,7 @@ class User:
         return 123456789
 
     def validate_code_1(self, phone_number, amount, code):
-        #check generate_code_1 comment
-        return True
+        return self.generate_code_1(amount, phone_number) == code
     
     def generate_code_2(self, amount, phone_number, code_1):
         #generate code_2 and validate_code_2 should use the same method to create
