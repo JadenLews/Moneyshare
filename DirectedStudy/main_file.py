@@ -1,5 +1,6 @@
 from user import User
 import time
+import hashlib
 
 
 #currently the phone number is the identifying number for an account
