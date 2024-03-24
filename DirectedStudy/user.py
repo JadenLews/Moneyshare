@@ -1,3 +1,6 @@
+import hashlib
+import random
+
 class User:
     def __init__(self, p_name, p_number, p_input_balance, currency):
         self.name = p_name
@@ -27,10 +30,26 @@ class User:
         #this method should use the amount, phone number and transaction log to 
         #create a code that cant be predicted by an outside party but is recreatable
         #for the other device 
-        return 123456789
+        
+        #generate a 4 digit nonce
+        
+        nonce_b = random.randint(1000, 9999)
+        
+        #compute a 4 digit MAC on A (phone_number), B (self), nonce_b,
+        #X (amount), and the log of previous transactions l
+        
+        ## could read and write from a text file to simulate l?
+        mac = hashlib.sha256(f"{phone_number}{self}{nonce_b}{amount}".encode()).hexdigest()[:4]
+        
+        # combine nonce_b and mac
+        code1 = f"{nonce_b}{mac}"
+        
+        return code1
 
     def validate_code_1(self, phone_number, code):
         #check generate_code_1 comment
+        
+        
         return True
     
     def generate_code_2(self, amount, phone_number, code_1):
