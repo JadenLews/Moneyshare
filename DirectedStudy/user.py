@@ -1,3 +1,5 @@
+from hashlib import sha256
+
 class User:
     def __init__(self, p_name, p_number, p_input_balance, currency):
         self.name = p_name
@@ -20,14 +22,33 @@ class User:
             self.account_balance = self.account_balance - amount
     
     def generate_code_1(self, amount, phone_number):
-        #generate code_1 and validate_code_1 should use the same method to create
-        #the code and so it'll be the same on the other device when they run
-        #validate_code_1
+        previous_transactions = self.transaction_log.get(phone_number, [])
 
-        #this method should use the amount, phone number and transaction log to 
-        #create a code that cant be predicted by an outside party but is recreatable
-        #for the other device 
-        return 123456789
+        # put the transaction data into a simple string format. The exact format doesn't
+        # really matter (as long as it splits numbers up in a non-ambiguous way),
+        # since all it's going to be hashed later.
+        all_transaction_data = ", ".join(amount for (_, amount) in previous_transactions)
+
+        # make a bytes object all of the data, and then hash it.
+        # again, the exact format of the data doesn't really matter as long
+        # as it's unambiguous
+        all_data = bytes(f"{phone_number}: {amount}\n{all_transaction_data}", "utf8")
+        hash = sha256(all_data).digest()
+
+        result = ""
+
+        # convert the hash's first few bytes into decimal digits.
+        # this method has an issue where multiple byte sequences can
+        # encode to the same digit sequence (e.g. "11" can be 2 bytes "1, 1" 
+        # or 1 byte "11"). I don't think that's a huge issue, but if someone can
+        # think of a way to fix that then please do!
+        for byte in hash:
+            # exit as soon as the result is six digits
+            if len(result) >= 6:
+                break
+            result += str(byte)
+
+        return result[0:6]
 
     def validate_code_1(self, phone_number, amount, code):
         return self.generate_code_1(amount, phone_number) == code
