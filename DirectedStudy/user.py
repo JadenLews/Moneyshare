@@ -29,7 +29,7 @@ class User:
         #for the other device 
         return 123456789
 
-    def validate_code_1(self, phone_number, code):
+    def validate_code_1(self, phone_number, amount, code):
         #check generate_code_1 comment
         return True
     

@@ -31,7 +31,7 @@ def send(user):
     amount = int(input('How much money are you sending?\n'))
     p_number = int(input('What is the phone number of who you are sending money to\n'))
     code_1 = int(input('Enter Code 1\n'))
-    code_1_check = user.validate_code_1(p_number, code_1)
+    code_1_check = user.validate_code_1(p_number, amount, code_1)
     #Check
     if code_1_check:
         #True
