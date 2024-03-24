@@ -31,22 +31,21 @@ def send(user):
     amount = int(input('How much money are you sending?\n'))
     p_number = int(input('What is the phone number of who you are sending money to\n'))
     code_1 = int(input('Enter Code 1\n'))
-    code_1_check = user.validate_code_1(p_number, amount, code_1)
+    code_1_check = user.validate_code_1(p_number, code_1)
     #Check
     if code_1_check:
         #True
         #generate code 2
+        user.make_transaction(amount, 'subtract')
         code_two = user.generate_code_2(amount, p_number, code_1)
         user.log_transaction(p_number, amount)
-        user.make_transaction(amount, 'subtract')
         print(f"Code 2 is {code_two}\n")
         print(f"Balance is now {user.account_balance}\n")
-        time.sleep(3)
-        choices(user)
-
     else:
         #error False
         print('There has been an error, try again')
+    time.sleep(3)
+    choices(user)
 
 
 def receive(user):
@@ -56,8 +55,8 @@ def receive(user):
     print(f"Code 1 is {code_one}\n")
     time.sleep(3)
     code_2 = int(input('Enter Code 2\n'))
-    #dkfjdskfjdskfsdkfksdjf
-    code_2_check = user.validate_code_2(amount, p_number, code_2, code_one[0])
+    code_2_check = user.validate_code_2(amount, p_number, code_2, code_one)
+    print(code_2_check)
     #Check
     if code_2_check:
         #True so add funds
@@ -66,8 +65,12 @@ def receive(user):
         user.log_transaction(p_number, amount)
         time.sleep(3)
         choices(user)
+    else:
+        print('Error')
+        choices(user)
 
+    
 
 list_accounts = []
-jaden = User('Jaden', 123, 100, 'USD')
-start(jaden)
+Jaden = User('Jaden', 2076102112, 100, 'USD')
+start(Jaden)

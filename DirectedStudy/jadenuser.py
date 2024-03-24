@@ -1,6 +1,4 @@
-from hashlib import sha256
 import random 
-
 
 class User:
     def __init__(self, p_name, p_number, p_input_balance, currency):
@@ -23,73 +21,19 @@ class User:
         elif action == 'subtract':
             self.account_balance = self.account_balance - amount
     
-    def generate_code_1(self, amountt, phone_numberr):
-        amount = str(amountt)
-        phone_number = str(phone_numberr)
-        previous_transactions = self.transaction_log.get(phone_number, [])
+    def generate_code_1(self, amount, phone_number):
+        #generate code_1 and validate_code_1 should use the same method to create
+        #the code and so it'll be the same on the other device when they run
+        #validate_code_1
 
-        # put the transaction data into a simple string format. The exact format doesn't
-        # really matter (as long as it splits numbers up in a non-ambiguous way),
-        # since all it's going to be hashed later.
-        all_transaction_data = ", ".join(amount for (_, amount) in previous_transactions)
+        #this method should use the amount, phone number and transaction log to 
+        #create a code that cant be predicted by an outside party but is recreatable
+        #for the other device 
+        return 123456789
 
-        # make a bytes object all of the data, and then hash it.
-        # again, the exact format of the data doesn't really matter as long
-        # as it's unambiguous
-        test = f"{phone_number}: {amount}\n{all_transaction_data}", "utf8"
-        all_data = bytes(f"{phone_number}: {amount}\n{all_transaction_data}", "utf8")
-        hash = sha256(all_data).digest()
-
-        result = ""
-
-        # convert the hash's first few bytes into decimal digits.
-        # this method has an issue where multiple byte sequences can
-        # encode to the same digit sequence (e.g. "11" can be 2 bytes "1, 1" 
-        # or 1 byte "11"). I don't think that's a huge issue, but if someone can
-        # think of a way to fix that then please do!
-        for byte in hash:
-            # exit as soon as the result is six digits
-            if len(result) >= 6:
-                break
-            result += str(byte)
-        #return all_data
-        return result[0:6], test
-
-    def validate_code_1(self, phone_numberr, amountt, code):
-        other = self.unique_identifier
-        amount = str(amountt)
-        phone_number = str(phone_numberr)
-        previous_transactions = self.transaction_log.get(other, [])
-
-        # put the transaction data into a simple string format. The exact format doesn't
-        # really matter (as long as it splits numbers up in a non-ambiguous way),
-        # since all it's going to be hashed later.
-        all_transaction_data = ", ".join(amount for (_, amount) in previous_transactions)
-
-        # make a bytes object all of the data, and then hash it.
-        # again, the exact format of the data doesn't really matter as long
-        # as it's unambiguous
-        test = f"{other}: {amount}\n{all_transaction_data}", "utf8"
-        all_data = bytes(f"{other}: {amount}\n{all_transaction_data}", "utf8")
-        hash = sha256(all_data).digest()
-
-        result = ""
-
-        # convert the hash's first few bytes into decimal digits.
-        # this method has an issue where multiple byte sequences can
-        # encode to the same digit sequence (e.g. "11" can be 2 bytes "1, 1" 
-        # or 1 byte "11"). I don't think that's a huge issue, but if someone can
-        # think of a way to fix that then please do!
-        for byte in hash:
-            # exit as soon as the result is six digits
-            if len(result) >= 6:
-                break
-            result += str(byte)
-
-        ans =result[0:6]
-        #return ans, test
-        return str(ans) == str(code)
-        return str(self.generate_code_1(amount, phone_number)) == str(code)
+    def validate_code_1(self, phone_number, code):
+        #check generate_code_1 comment
+        return True
     
     def generate_code_2(self, amount, phone_number, code_1):
         ia = int(amount)
@@ -121,6 +65,7 @@ class User:
         random.seed(seed)
         #return test
         return random.randint(1,99999999)
+        
 
     def validate_code_2(self, amount, phone_number, code_2, code_1):
         ia = int(amount)
@@ -162,7 +107,12 @@ class User:
         #should contain the amount and the action being done, this log will be used
         #to generate codes for future transactions
         if p_number in self.transaction_log:
-            self.transaction_log[p_number].append((str(p_number), str(amount)))
+            self.transaction_log[p_number].append((p_number, amount))
         else:
             #no history create item in dictionary
-            self.transaction_log[p_number] = [(str(p_number), str(amount))]
+            self.transaction_log[p_number] = [(p_number, amount)]
+
+
+#jaden = User('Jaden', 2076102112, 100, 'USD')
+#two = User('Jaden', 2076109219, 100, 'USD')
+#code = jaden.generate_code_2(50, 2076109219, 123456)

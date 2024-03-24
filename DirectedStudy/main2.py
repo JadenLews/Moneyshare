@@ -32,6 +32,7 @@ def send(user):
     p_number = int(input('What is the phone number of who you are sending money to\n'))
     code_1 = int(input('Enter Code 1\n'))
     code_1_check = user.validate_code_1(p_number, amount, code_1)
+    print(code_1_check)
     #Check
     if code_1_check:
         #True
@@ -56,7 +57,7 @@ def receive(user):
     print(f"Code 1 is {code_one}\n")
     time.sleep(3)
     code_2 = int(input('Enter Code 2\n'))
-    #dkfjdskfjdskfsdkfksdjf
+    #jdkfjskfsjfskjfs
     code_2_check = user.validate_code_2(amount, p_number, code_2, code_one[0])
     #Check
     if code_2_check:
@@ -69,5 +70,5 @@ def receive(user):
 
 
 list_accounts = []
-jaden = User('Jaden', 123, 100, 'USD')
+jaden = User('Jaden', 1234, 100, 'USD')
 start(jaden)
