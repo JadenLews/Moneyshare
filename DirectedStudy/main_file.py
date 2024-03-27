@@ -29,31 +29,33 @@ def check_balance(user):
 def send(user):
     #send to which user
     amount = int(input('How much money are you sending?\n'))
-    p_number = int(input('What is the phone number of who you are sending money to\n'))
-    code_1 = int(input('Enter Code 1\n'))
-    code_1_check = user.validate_code_1(p_number, amount, code_1)
-    #Check
-    if code_1_check:
-        #True
-        #generate code 2
-        code_two = user.generate_code_2(amount, p_number, code_1)
-        user.log_transaction(p_number, amount)
-        user.make_transaction(amount, 'subtract')
-        print(f"Code 2 is {code_two}\n")
-        print(f"Balance is now {user.account_balance}\n")
-        time.sleep(3)
-        choices(user)
-
+    if amount > user.account_balance:
+        print('You do not have the funds for that')
     else:
-        #error False
-        print('There has been an error, try again')
+        p_number = int(input('What is the phone number of who you are sending money to\n'))
+        code_1 = int(input('Enter Code 1\n'))
+        code_1_check = user.validate_code_1(p_number, amount, code_1)
+        #Check
+        if code_1_check:
+            #True
+            #generate code 2
+            code_two = user.generate_code_2(amount, p_number, code_1)
+            user.log_transaction(p_number, amount)
+            user.make_transaction(amount, 'subtract')
+            print(f"Code 2 is {code_two}\n")
+            print(f"Balance is now {user.account_balance}\n")
+        else:
+            #error False
+            print('There has been an error, try again')
+    time.sleep(3)
+    choices(user)
 
 
 def receive(user):
     amount = int(input('How much money are you receiving?\n'))
     p_number = int(input('What is the phone number of who is sending money?\n'))
     code_one = user.generate_code_1(amount, p_number)
-    print(f"Code 1 is {code_one}\n")
+    print(f"Code 1 is {code_one[0]}\n")
     time.sleep(3)
     code_2 = int(input('Enter Code 2\n'))
     #dkfjdskfjdskfsdkfksdjf
@@ -64,13 +66,13 @@ def receive(user):
         user.make_transaction(amount, 'add')
         print(f"{amount} has been added to your wallet\nYour balance is now {user.account_balance}\n")
         user.log_transaction(p_number, amount)
-        time.sleep(3)
-        choices(user)
+    else:
+        print('error')
+    time.sleep(3)
+    choices(user)
+
 
 
 list_accounts = []
-jaden = User('Jaden', 123, 100, 'USD')
-jaden.load_transaction_log()
-jaden.print_transaction_log()
-print(jaden.transaction_log)
-# start(jaden)
+jaden = User('Jaden', 2076102112, 100, 'USD')
+start(jaden)
