@@ -70,4 +70,7 @@ def receive(user):
 
 list_accounts = []
 jaden = User('Jaden', 123, 100, 'USD')
-start(jaden)
+jaden.load_transaction_log()
+jaden.print_transaction_log()
+print(jaden.transaction_log)
+# start(jaden)
