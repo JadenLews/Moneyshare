@@ -1,7 +1,9 @@
 from hashlib import sha256
+from savecsv import csvlog
 import random 
-import os
 import csv
+import os
+
 
 class User:
     def __init__(self, p_name, p_number, p_input_balance, currency):
@@ -11,6 +13,11 @@ class User:
         self.account_balance = p_input_balance
         self.currency = currency
         self.transaction_log = {}
+        filename = self.name + '.csv'
+        path = './userlogs/' + filename
+        check_file = os.path.isfile(path)
+        if check_file:
+            self.load_user(filename)
         #user identifier has to be unique
     def balance_check(self, amount):
         if self.account_balance < amount:
@@ -121,6 +128,7 @@ class User:
         #test += f"\n {seed}"
         random.seed(seed)
         #return test
+        csvlog(self, phone_number, amount)
         return random.randint(1,99999999)
 
     def validate_code_2(self, amount, phone_number, code_2, code_1):
@@ -153,44 +161,10 @@ class User:
         #return test
         expected = random.randint(1,99999999)
         if expected == int(code_2):
+            csvlog(self, phone_number, amount)
             return True
         else:
             return False
-    
-    def load_transaction_log(self):
-        # Load entire transaction log for the specified user.
-        # First check if the file exists. If so, set transaction_log to the
-        # values read from the file
-        
-        # As of 3/27, they are read to list. This should be changed to a dictionary,
-        # with phone numbers as keys, linking to a list of transaction
-        file_name = str(self.unique_identifier) + "_log.csv"
-        file_path = os.path.join(os.getcwd(), file_name)
-        
-        if os.path.exists(file_path):
-            data_dictionary = {}
-            with open(file_path, mode='r') as file:
-                csv_reader = csv.reader(file)
-                
-                for row in csv_reader:
-                    key = row[0] #phone number
-                    values = row[1:] #transaction amts
-                    data_dictionary[key] = values
-            
-                self.transaction_log = data_dictionary
-            print()
-            print(file_name + " successfully loaded")
-            print()
-        else:
-            self.transaction_log = {}
-            print()
-            print(file_name + " does not exist in the current directory")
-            print()
-        
-    def print_transaction_log(self):
-        for number, transaction_amts in self.transaction_log.items():
-            for amt in transaction_amts:
-                print(f"Phone number: {number}, Transaction amt: {amt}")
     
     def log_transaction(self, p_number, amount):
         #self.transaction log is a dictionary that we should have phone numbers link 
@@ -199,7 +173,20 @@ class User:
         #to generate codes for future transactions
         if p_number in self.transaction_log:
             self.transaction_log[p_number].append((str(p_number), str(amount)))
-            ## can modify
         else:
             #no history create item in dictionary
             self.transaction_log[p_number] = [(str(p_number), str(amount))]
+
+    def load_user(self, filename):
+        with open('./userlogs/' + filename, 'r') as file:
+            csvreader = csv.reader(file)
+            for row in csvreader:
+                phone = row[0]
+                amoun = row[1]
+                if phone in self.transaction_log:
+                    self.transaction_log[phone].append((str(phone), str(amoun)))
+                else:
+                    #no history create item in dictionary
+                    self.transaction_log[phone] = [(str(phone), str(amoun))]
+
+
