@@ -40,8 +40,6 @@ def send(user):
             #True
             #generate code 2
             code_two = user.generate_code_2(amount, p_number, code_1)
-            user.log_transaction(p_number, amount)
-            user.make_transaction(amount, 'subtract')
             print(f"Code 2 is {code_two}\n")
             print(f"Balance is now {user.account_balance}\n")
         else:
@@ -58,18 +56,17 @@ def receive(user):
     print(f"Code 1 is {code_one[0]}\n")
     time.sleep(3)
     code_2 = int(input('Enter Code 2\n'))
-    #dkfjdskfjdskfsdkfksdjf
     code_2_check = user.validate_code_2(amount, p_number, code_2, code_one[0])
     #Check
     if code_2_check:
-        #True so add funds
-        user.make_transaction(amount, 'add')
         print(f"{amount} has been added to your wallet\nYour balance is now {user.account_balance}\n")
-        user.log_transaction(p_number, amount)
-        time.sleep(3)
-        choices(user)
+    else:
+        print('error')
+    time.sleep(3)
+    choices(user)
+
 
 
 list_accounts = []
-jaden = User('Two', 2076109219, 100, 'USD')
-start(jaden)
+two = User('two', 12345567, 100, 'USD')
+start(two)

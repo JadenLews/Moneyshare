@@ -2,9 +2,9 @@ import random
 from user import User
 
 #testing for the project
-num_trials = 5
-transaction_per_trial = 5
-people = 8
+num_trials = 1
+transaction_per_trial = 20
+people = 6
 
 def print_people(list_user):
     all = ''
@@ -54,7 +54,7 @@ for trial in range(num_trials):
                     peoples = potential
                     break
 
-        print(f"transaction amount:{transaction_amount}, Who sends: {peoples[sender].name}\n people:\n{print_people(peoples)}")
+        print(f"transaction amount:{transaction_amount}, Who sends: {peoples[sender].name}, Who receives: {peoples[1-sender].name}\n people:\n{print_people(peoples)}")
         
         #we have the two people doing the transaction, we know the transaction should be 
         #valid, now we have to test and ensure it runs correctly
@@ -64,8 +64,8 @@ for trial in range(num_trials):
         answer1 = peoples[sender].validate_code_1(peoples[1-sender].unique_identifier, transaction_amount, code_one[0])
         code_two = peoples[sender].generate_code_2(transaction_amount, peoples[1-sender].unique_identifier, code_one[0])
         answer2 = peoples[1-sender].validate_code_2(transaction_amount, peoples[sender].unique_identifier, code_two, code_one[0])
-        peoples[0].log_transaction(peoples[1].unique_identifier, transaction_amount)
-        peoples[1].log_transaction(peoples[0].unique_identifier, transaction_amount)
+        #peoples[1 - sender].log_transaction(peoples[sender].unique_identifier, transaction_amount, 'R')
+        #peoples[sender].log_transaction(peoples[1 - sender].unique_identifier, transaction_amount, 'S')
         if answer1 and answer2:
             correct += 1
         else:
@@ -78,5 +78,6 @@ for trial in range(num_trials):
     allcorrect += correct
     allfalse += false
 print(f"Correct trials: {allcorrect}, False trials: {allfalse}")
+
         #print(code_one[0])
         #print(code_two)
