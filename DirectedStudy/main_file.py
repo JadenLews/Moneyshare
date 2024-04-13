@@ -1,6 +1,6 @@
 from user import User
 import time
-
+from arguments import get_cli_arguments
 
 #currently the phone number is the identifying number for an account
 #this us under the assumption that all phone numbers for sim technology 
@@ -68,5 +68,13 @@ def receive(user):
 
 
 list_accounts = []
-jaden = User('Jaden', 5445677, 100, 'USD')
-start(jaden)
+args = get_cli_arguments()
+
+user = User(
+    args.username,
+    args.phone_number,
+    args.initial_balance,
+    args.currency,
+)
+
+start(user)
