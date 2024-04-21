@@ -3,7 +3,10 @@ from savecsv import csvlog
 import random 
 import csv
 import os
-
+import qrcode
+from pyzbar.pyzbar import decode
+from IPython.display import display
+from PIL import Image
 
 class User:
     def __init__(self, p_name, p_number, p_input_balance, currency):
@@ -36,7 +39,7 @@ class User:
             self.account_balance = self.account_balance + amount
         elif action == 'subtract':
             self.account_balance = self.account_balance - amount
-    
+        
     def generate_code_1(self, amountt, phone_numberr):
         amount = str(amountt)
         phone_number = str(phone_numberr)
@@ -66,8 +69,17 @@ class User:
             if len(result) >= 6:
                 break
             result += str(byte)
+        
+        data = result[0:6]
+        
+        #create QR code
+        filename = 'code_1.png'
+        qr_code = qrcode.make(data)
+        qr_code.save(filename)
+        display(Image.open(filename))
+        
         #return all_data
-        return result[0:6], test
+        return data, filename, test
 
     def validate_code_1(self, phone_numberr, amountt, code):
         other = self.unique_identifier
@@ -102,10 +114,35 @@ class User:
 
         ans =result[0:6]
         #return ans, test
-        return str(ans) == str(code)
+        
+        # determine if code is numeric or png
+        if '.png' in str(code):
+            qr_code_1 = Image.open(code)
+            decoded_objects = decode(qr_code_1)
+            if decoded_objects:
+                code_1 = decoded_objects[0].data.decode()
+                print("File found")
+                return str(ans) == str(code_1)
+            else:
+                print("File not found")
+                return False
+        else:
+            # code is numeric
+            return str(ans) == str(code)
+        
         return str(self.generate_code_1(amount, phone_number)) == str(code)
     
-    def generate_code_2(self, amount, phone_number, code_1):
+    def generate_code_2(self, amount, phone_number, code):
+        
+        # deterine if code_1 is numeric or png
+        if '.png' in str(code):
+            qr_code_1 = Image.open(code)
+            decoded_objects = decode(qr_code_1)
+            if decoded_objects:
+                code_1 = decoded_objects[0].data.decode()
+            else:
+                print("File not found")
+        
         ia = int(amount)
         ipn = int(phone_number)
         ic1 = int(code_1)
@@ -137,7 +174,16 @@ class User:
         self.make_transaction(amount, 'subtract')
         csvlog(self, phone_number, amount, 'S')
         self.log_transaction(phone_number, amount, 'S')
-        return random.randint(1,99999999)
+        
+        code_2 = random.randint(1,99999999)
+        
+        #create QR code
+        filename = 'code_2.png'
+        qr_code = qrcode.make(code_2)
+        qr_code.save(filename)
+        display(Image.open(filename))
+        
+        return code_2, filename
 
     def validate_code_2(self, amount, phone_number, code_2, code_1):
         ia = int(amount)
@@ -207,5 +253,3 @@ class User:
                         #no history create item in dictionary
                         self.transaction_log[phone] = [(str(phone), str(amoun))]
             self.account_balance = inputamount
-
-
