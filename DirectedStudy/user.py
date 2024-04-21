@@ -186,6 +186,24 @@ class User:
         return code_2, filename
 
     def validate_code_2(self, amount, phone_number, code_2, code_1):
+        
+        # deterine if code_1 and code_2 are numeric or png. If png, convert to numeric
+        if '.png' in str(code_1):
+            qr_code_1 = Image.open(code_1)
+            decoded_objects = decode(qr_code_1)
+            if decoded_objects:
+                code_1 = decoded_objects[0].data.decode()
+            else:
+                print("Code 1 file not found")
+                
+        if '.png' in str(code_2):
+            qr_code_2 = Image.open(code_2)
+            decoded_objects = decode(qr_code_2)
+            if decoded_objects:
+                code_2= decoded_objects[0].data.decode()
+            else:
+                print("Code 2 file not found")
+        
         ia = int(amount)
         ipn = int(phone_number)
         ic1 = int(code_1)
