@@ -1,5 +1,7 @@
 from user import User
 import time
+from arguments import get_cli_arguments
+
 
 
 #currently the phone number is the identifying number for an account
@@ -34,14 +36,12 @@ def send(user):
     else:
         p_number = int(input('What is the phone number of who you are sending money to\n'))
         code_1 = int(input('Enter Code 1\n'))
-        code_1_check = user.validate_code_1(p_number, amount, code_1)
+        code_1_check = user.validate_code_1(p_number, amount, code_1)[0]
         #Check
         if code_1_check:
             #True
             #generate code 2
             code_two = user.generate_code_2(amount, p_number, code_1)
-            user.log_transaction(p_number, amount)
-            user.make_transaction(amount, 'subtract')
             print(f"Code 2 is {code_two}\n")
             print(f"Balance is now {user.account_balance}\n")
         else:
@@ -58,14 +58,10 @@ def receive(user):
     print(f"Code 1 is {code_one[0]}\n")
     time.sleep(3)
     code_2 = int(input('Enter Code 2\n'))
-    #dkfjdskfjdskfsdkfksdjf
     code_2_check = user.validate_code_2(amount, p_number, code_2, code_one[0])
     #Check
     if code_2_check:
-        #True so add funds
-        user.make_transaction(amount, 'add')
         print(f"{amount} has been added to your wallet\nYour balance is now {user.account_balance}\n")
-        user.log_transaction(p_number, amount)
     else:
         print('error')
     time.sleep(3)
@@ -74,5 +70,16 @@ def receive(user):
 
 
 list_accounts = []
-jaden = User('Jaden', 2076102112, 100, 'USD')
-start(jaden)
+#jaden = User('0', 7440967026, 701, 'USD')
+#jaden.log_reset(7262916173)
+#start(jaden)
+args = get_cli_arguments()
+
+user = User(
+    args.username,
+    args.phone_number,
+    args.initial_balance,
+    args.currency,
+)
+
+start(user)

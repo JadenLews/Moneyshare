@@ -101,6 +101,6 @@ def receive(user):
 
 
 list_accounts = []
-two = User('ppp', 200, 456, 'USD')
+two = User('2', 100, 456, 'USD')
 #two.log_reset(7440967026)
 start(two)
