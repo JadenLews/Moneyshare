@@ -42,7 +42,7 @@ def send(user):
             code_1 = int(input('Enter Code 1\n'))
         elif mode == "qr":
             #check some file location as a temp place holder pretending as if it were using a camera to scan
-            qr_code_2 = Image.open("code_2.png")
+            qr_code_2 = Image.open("code_1.png")
             decoded_objects = decode(qr_code_2)
             if decoded_objects:
                 code_1= decoded_objects[0].data.decode()
@@ -101,6 +101,6 @@ def receive(user):
 
 
 list_accounts = []
-two = User('ppp', 200, 456, 'USD')
+two = User('1', 200, 456, 'USD')
 #two.log_reset(7440967026)
 start(two)
